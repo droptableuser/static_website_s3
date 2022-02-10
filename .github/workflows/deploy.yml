@@ -6,8 +6,10 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout base repo
+        uses: actions/checkout@v2
       - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+        name: Checkout website
         with:
           submodules: true # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
@@ -20,8 +22,18 @@ jobs:
           hugo-version: "latest"
           # extended: true
 
-      - name: build
+      - name: build website
         run: cd website && hugo --minify
+      - name: Assume Role
+        uses: youyo/awscredswrap@master
+        with:
+          role_arn: ${{ secrets.ROLE_ARN }}
+          duration_seconds: 3600
+          role_session_name: "awscredswrap@GitHubActions"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "ap-northeast-1"
       - name: cdk deploy
         uses: youyo/aws-cdk-github-actions@v2
         with:
