@@ -41,4 +41,4 @@ jobs:
           cdk_args: "--require-approval never"
           actions_comment: false
         env:
-          DOMAIN_NAME: "scharitzer.io"
+          DOMAIN: "scharitzer.io"
