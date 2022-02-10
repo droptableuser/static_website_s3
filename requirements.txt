@@ -1,4 +1,5 @@
 aws-cdk.core==1.136.0
+aws-cdk.aws_s3_deployment==1.136.0
 aws-cdk.aws_cloudfront==1.136.0
 aws-cdk.aws_cloudfront_origins==1.136.0
 aws-cdk.aws_route53_targets===1.136.0
