@@ -41,7 +41,4 @@ jobs:
           cdk_args: "--require-approval never"
           actions_comment: false
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "eu-central-1"
           DOMAIN_NAME: "scharitzer.io"
