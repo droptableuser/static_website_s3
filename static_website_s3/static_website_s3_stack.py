@@ -22,12 +22,12 @@ class StaticWebsiteS3Stack(core.Stack):
         super().__init__(scope, construct_id, **kwargs)
         domain = Domain
         domain_names = [domain,"www."+domain]
-        if os.path.exists("scharitzer.io/public") == False:
+        if os.path.exists("website/public") == False:
             sys.exit("website not found")
 
         bucket = s3.Bucket(self,domain+str(uuid.uuid4()),access_control=s3.BucketAccessControl.PRIVATE,)
 
-        s3deploy.BucketDeployment(self,domain+"BucketDeployment",destination_bucket=bucket,sources=[s3deploy.Source.asset("scharitzer.io/public")],retain_on_delete=False)
+        s3deploy.BucketDeployment(self,domain+"BucketDeployment",destination_bucket=bucket,sources=[s3deploy.Source.asset("website/public")],retain_on_delete=False)
 
 
         origin_access_identity = cf.OriginAccessIdentity(self,domain+'OriginAccessIdentity')
