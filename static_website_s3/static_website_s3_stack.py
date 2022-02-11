@@ -26,7 +26,7 @@ class StaticWebsiteS3Stack(core.Stack):
         if os.path.exists("website/public") == False:
             sys.exit("website not found")
 
-        bucket = s3.Bucket(self,domain+str(uuid.uuid4()),access_control=s3.BucketAccessControl.PRIVATE,)
+        bucket = s3.Bucket(self,domain,access_control=s3.BucketAccessControl.PRIVATE)
         s3deploy.BucketDeployment(self,domain+"BucketDeployment",destination_bucket=bucket,sources=[s3deploy.Source.asset("website/public")],retain_on_delete=False)
 
         origin_access_identity = cf.OriginAccessIdentity(self,domain+'OriginAccessIdentity')
@@ -35,11 +35,12 @@ class StaticWebsiteS3Stack(core.Stack):
         hosted_zone = route53.HostedZone.from_lookup(
              self, domain+"HostedZone", domain_name=domain)
 
-        cert = cm.Certificate(
+        cert = cm.DnsValidatedCertificate(
              self, domain+"Certificate",
              domain_name=domain,
              subject_alternative_names=domain_names,
-             validation=cm.CertificateValidation.from_dns(hosted_zone))
+             hosted_zone=hosted_zone,
+             region="us-east-1")
         
         error_response = [cf.ErrorResponse(
             http_status=404,
@@ -47,7 +48,7 @@ class StaticWebsiteS3Stack(core.Stack):
 
 
         distribution = cf.Distribution(self,domain+'websitedistribution',       
-            default_behavior=cf.BehaviorOptions(origin=origins.S3Origin(bucket,origin_access_identity=origin_access_identity)),domain_names=domain_names,certificate=cert,price_class=cf.PriceClass.PRICE_CLASS_100,error_responses=error_response)
+            default_behavior=cf.BehaviorOptions(origin=origins.S3Origin(bucket,origin_access_identity=origin_access_identity)),domain_names=domain_names,price_class=cf.PriceClass.PRICE_CLASS_100,error_responses=error_response,certificate=cert, default_root_object="index.html")
 
         for record in domain_names:
             route53.ARecord(self, record+"Aalias",record_name=record,zone=hosted_zone,target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)))
