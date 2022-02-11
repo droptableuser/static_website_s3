@@ -41,6 +41,7 @@ class StaticWebsiteS3Stack(core.Stack):
              subject_alternative_names=domain_names,
              hosted_zone=hosted_zone,
              region="us-east-1")
+        cert.apply_removal_policy(core.RemovalPolicy.DESTROY)
         
         error_response = [cf.ErrorResponse(
             http_status=404,
