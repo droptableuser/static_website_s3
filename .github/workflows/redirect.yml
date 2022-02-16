@@ -3,27 +3,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-scharitzer.io:
+  deploy-redirect-sec-engineer:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout base repo
         uses: actions/checkout@v2
-      - uses: actions/checkout@v2
-        name: Checkout website
-        with:
-          submodules: true # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
-          repository: droptableuser/scharitzer.io
-          path: website
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: "latest"
-          # extended: true
-
-      - name: build website
-        run: cd website && hugo --minify
 
       - name: cdk deploy
         uses: youyo/aws-cdk-github-actions@v2
@@ -32,7 +16,8 @@ jobs:
           cdk_args: "--require-approval never"
           actions_comment: false
         env:
-          DOMAIN: "scharitzer.io"
+          DOMAIN: "sec-engineer.sh"
+          REDIRECT: "scharitzer.io"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "eu-central-1"

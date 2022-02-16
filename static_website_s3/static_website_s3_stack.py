@@ -1,10 +1,9 @@
 from os import access
 import os
 import sys
-import uuid
 from aws_cdk import (
     # Duration,
-    core,
+    Stack,
     aws_s3 as s3,
     aws_cloudfront as cf,
     aws_cloudfront_origins as origins,
@@ -14,20 +13,32 @@ from aws_cdk import (
     aws_s3_deployment as s3deploy
     # aws_sqs as sqs,
 )
+import aws_cdk as cdk
+
 from constructs import Construct
 
-class StaticWebsiteS3Stack(core.Stack):
+class StaticWebsiteS3Stack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-        domain=os.environ.get('DOMAIN','droptableuser.me')
-        
+        domain=os.environ.get('DOMAIN',None)
+        if domain == None:
+            sys.exit("You need to specify a domain name!")
+        redirect_hostname= os.environ.get('REDIRECT',None)
+        redirect = None
+        if redirect_hostname:
+            redirect=s3.RedirectTarget(host_name=redirect_hostname,protocol=s3.RedirectProtocol.HTTPS)
         domain_names = [domain,"www."+domain]
-        if os.path.exists("website/public") == False:
-            sys.exit("website not found")
 
-        bucket = s3.Bucket(self,domain,access_control=s3.BucketAccessControl.PRIVATE)
-        s3deploy.BucketDeployment(self,domain+"BucketDeployment",destination_bucket=bucket,sources=[s3deploy.Source.asset("website/public")],retain_on_delete=False)
+        bucket = s3.Bucket(self,domain,
+            access_control=s3.BucketAccessControl.PRIVATE,
+            removal_policy=core.RemovalPolicy.DESTROY,website_redirect=redirect)
+
+
+        sources = None
+        if os.path.exists("website/public") != False:
+            sources = [s3deploy.Source.asset("website/public")]
+            s3deploy.BucketDeployment(self,domain+"BucketDeployment",destination_bucket=bucket,sources=sources,retain_on_delete=False)
 
         origin_access_identity = cf.OriginAccessIdentity(self,domain+'OriginAccessIdentity')
         bucket.grant_read(origin_access_identity)
@@ -41,7 +52,7 @@ class StaticWebsiteS3Stack(core.Stack):
              subject_alternative_names=domain_names,
              hosted_zone=hosted_zone,
              region="us-east-1")
-        cert.apply_removal_policy(core.RemovalPolicy.DESTROY)
+        #cert.apply_removal_policy(core.RemovalPolicy.DESTROY)
         
         error_response = [cf.ErrorResponse(
             http_status=404,
@@ -53,4 +64,5 @@ class StaticWebsiteS3Stack(core.Stack):
 
         for record in domain_names:
             route53.ARecord(self, record+"Aalias",record_name=record,zone=hosted_zone,target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)))
-            route53.AaaaRecord(self, record+"AAAAAalias",record_name=record,zone=hosted_zone,target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)))
+            if record.startswith(domain):
+                route53.AaaaRecord(self, record+"AAAAAalias",record_name=record,zone=hosted_zone,target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)))

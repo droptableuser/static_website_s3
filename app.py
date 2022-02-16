@@ -9,6 +9,7 @@ ACCOUNT=os.environ.get('AWS_ACCOUNT', '742344209721')
 REGION=os.environ.get('AWS_REGION', 'eu-central-1')
 env = core.Environment(account=ACCOUNT, region=REGION)
 app = core.App()
-StaticWebsiteS3Stack(app, "StaticWebsiteS3Stack", env=env)
+domain=os.environ.get("DOMAIN",None)
+StaticWebsiteS3Stack(app, domain+"StaticWebsiteS3Stack", env=env)
 
 app.synth()
