@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-scharitzer.io:
+  deploy-scharitzer-io:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout base repo

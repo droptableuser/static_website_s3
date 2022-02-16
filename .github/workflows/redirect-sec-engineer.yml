@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-redirect-sec-engineer:
+  deploy-redirect-sec-engineer-sh:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout base repo
