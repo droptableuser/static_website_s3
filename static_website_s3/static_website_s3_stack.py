@@ -1,4 +1,3 @@
-from os import access
 import os
 import sys
 from aws_cdk import (
