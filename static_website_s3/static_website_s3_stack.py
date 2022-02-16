@@ -31,7 +31,7 @@ class StaticWebsiteS3Stack(Stack):
 
         bucket = s3.Bucket(self,domain,
             access_control=s3.BucketAccessControl.PRIVATE,
-            removal_policy=core.RemovalPolicy.DESTROY,website_redirect=redirect)
+            removal_policy=cdk.RemovalPolicy.DESTROY,website_redirect=redirect)
 
 
         sources = None
@@ -51,7 +51,6 @@ class StaticWebsiteS3Stack(Stack):
              subject_alternative_names=domain_names,
              hosted_zone=hosted_zone,
              region="us-east-1")
-        #cert.apply_removal_policy(core.RemovalPolicy.DESTROY)
         
         error_response = [cf.ErrorResponse(
             http_status=404,
