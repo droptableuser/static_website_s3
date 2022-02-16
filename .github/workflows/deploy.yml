@@ -33,6 +33,7 @@ jobs:
           actions_comment: false
         env:
           DOMAIN: "scharitzer.io"
+          STACKNAME: "scharitzer-io-main"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "eu-central-1"
