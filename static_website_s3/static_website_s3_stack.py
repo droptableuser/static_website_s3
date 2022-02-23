@@ -58,7 +58,7 @@ class StaticWebsiteS3Stack(Stack):
         origin=origins.S3Origin(bucket,origin_access_identity=origin_access_identity)
 
         distribution = cf.Distribution(self,domain+'websitedistribution',       
-            default_behavior=cf.behaviorOptions(origin=origin),domain_names=domain_names,price_class=cf.PriceClass.PRICE_CLASS_100,error_responses=error_response,certificate=cert, default_root_object="index.html",
+            default_behavior=cf.BehaviorOptions(origin=origin),domain_names=domain_names,price_class=cf.PriceClass.PRICE_CLASS_100,error_responses=error_response,certificate=cert, default_root_object="index.html",
             )
         distribution.add_behavior("*",origin,viewer_protocol_policy=cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS)
 
