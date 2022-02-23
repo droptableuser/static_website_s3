@@ -58,7 +58,8 @@ class StaticWebsiteS3Stack(Stack):
 
 
         distribution = cf.Distribution(self,domain+'websitedistribution',       
-            default_behavior=cf.BehaviorOptions(origin=origins.S3Origin(bucket,origin_access_identity=origin_access_identity)),domain_names=domain_names,price_class=cf.PriceClass.PRICE_CLASS_100,error_responses=error_response,certificate=cert, default_root_object="index.html")
+            default_behavior=cf.BehaviorOptions(origin=origins.S3Origin(bucket,origin_access_identity=origin_access_identity)),domain_names=domain_names,price_class=cf.PriceClass.PRICE_CLASS_100,error_responses=error_response,certificate=cert, default_root_object="index.html",
+            viewer_protocol_policy=cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS)
 
         for record in domain_names:
             route53.ARecord(self, record+"Aalias",record_name=record,zone=hosted_zone,target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)))
