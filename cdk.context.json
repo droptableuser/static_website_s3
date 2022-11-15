@@ -1,0 +1,10 @@
+{
+  "hosted-zone:account=742344209721:domainName=droptableuser.me:region=eu-central-1": {
+    "Id": "/hostedzone/Z0083642GMW4A3PS0GZ0",
+    "Name": "droptableuser.me."
+  },
+  "hosted-zone:account=742344209721:domainName=scharitzer.io:region=eu-central-1": {
+    "Id": "/hostedzone/Z0220950HZPIJ2X72VAK",
+    "Name": "scharitzer.io."
+  }
+}

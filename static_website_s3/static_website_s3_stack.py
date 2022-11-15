@@ -31,7 +31,7 @@ class StaticWebsiteS3Stack(Stack):
 
         bucket = s3.Bucket(self,domain,
             access_control=s3.BucketAccessControl.PRIVATE,
-            removal_policy=cdk.RemovalPolicy.DESTROY,website_redirect=redirect)
+            removal_policy=cdk.RemovalPolicy.DESTROY,website_redirect=redirect, auto_delete_objects=True)
 
 
         sources = None
