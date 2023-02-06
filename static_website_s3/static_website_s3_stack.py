@@ -43,7 +43,7 @@ class StaticWebsiteS3Stack(Stack):
         bucket.grant_read(origin_access_identity)
 
         hosted_zone = route53.HostedZone.from_hosted_zone_id(
-             self, domain+"HostedZone", id="Z06012823NBMI91D46AY5")
+             self, domain+"HostedZone","Z06012823NBMI91D46AY5")
 
         cert = cm.DnsValidatedCertificate(
              self, domain+"Certificate",
